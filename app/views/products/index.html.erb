@@ -1,0 +1,70 @@
+<h1>Products</h1>
+
+<p>Search and explore your favorite products here: <%= link_to "Search for products", search_path %></p>
+<%= form_tag(products_path, method: "get") do %>
+  <%= select_tag :filter, options_for_select({ "All Products" => "", "On Sale" => "on_sale", "New Products" => "new", "Recently Updated" => "recently_updated" }, params[:filter]) %>
+  <%= submit_tag "Filter" %>
+<% end %>
+
+<% if params[:filter].blank? || params[:filter] == "All Products" %>
+  <h2>All Products</h2>
+  <% if @products.any? %>
+    <ul>
+      <% @products.each do |product| %>
+        <li><%= link_to product.name, product_path(product) %></li>
+        <!-- You can add additional information here if needed -->
+      <% end %>
+    </ul>
+    <%= paginate @products %>
+  <% else %>
+    <p>No products found.</p>
+  <% end %>
+
+<% elsif params[:filter] == "on_sale" %>
+  <h2>On Sale Products</h2>
+  <% if @on_sale_products.any? %>
+    <ul>
+      <% @on_sale_products.each do |product| %>
+        <li><%= link_to product.name, product_path(product) %></li>
+        <!-- You can add additional information here if needed -->
+      <% end %>
+    </ul>
+    <%= paginate @on_sale_products %>
+  <% else %>
+    <p>No on-sale products found.</p>
+  <% end %>
+
+<% elsif params[:filter] == "new" %>
+  <h2>New Products</h2>
+  <% if @new_products.any? %>
+    <ul>
+      <% @new_products.each do |product| %>
+        <li><%= link_to product.name, product_path(product) %></li>
+      <% end %>
+    </ul>
+    <%= paginate @new_products %>
+  <% else %>
+    <p>No new products found.</p>
+  <% end %>
+
+<% elsif params[:filter] == "recently_updated" %>
+  <h2>Recently Updated Products</h2>
+  <% if @recently_updated_products.any? %>
+    <ul>
+      <% @recently_updated_products.each do |product| %>
+        <li><%= link_to product.name, product_path(product) %></li>
+        <!-- You can add additional information here if needed -->
+      <% end %>
+    </ul>
+    <%= paginate @recently_updated_products %>
+  <% else %>
+    <p>No recently updated products found.</p>
+  <% end %>
+
+<% end %>
+
+<% if @products.any? && params[:filter] != "new" && params[:filter] != "recently_updated" %>
+  <%= paginate @products %>
+<% elsif !@products.any? %>
+  <p>No products found.</p>
+<% end %>
